@@ -4,18 +4,20 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.example.courses.data.DataSource
 import com.example.courses.model.TopicCourse
 import com.example.courses.ui.theme.CoursesTheme
 
@@ -29,7 +31,7 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colors.background
                 ) {
-
+                    CoursesApp()
                 }
             }
         }
@@ -37,18 +39,43 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
+fun CoursesApp() {
+    CoursesListGrid(topicCourse = DataSource.topicsCourse)
+}
+
+@Composable
+private fun CoursesListGrid(topicCourse: List<TopicCourse>) {
+    LazyVerticalGrid(
+        columns = GridCells.Adaptive(minSize = 168.dp),
+        contentPadding = PaddingValues(start = 8.dp, end = 8.dp, top = 8.dp),
+        verticalArrangement = Arrangement.spacedBy(8.dp),
+        horizontalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
+        items(topicCourse) { topicCourse ->
+            CoursesCard(topicCourse)
+        }
+    }
+
+}
+
+
+@Composable
 fun CoursesCard(
     topicCourse: TopicCourse,
     modifier: Modifier = Modifier
 ) {
-    Card() {
+    Card(elevation = 4.dp) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             Image(
                 painter = painterResource(topicCourse.courseImage),
                 contentDescription = null,
+                modifier = modifier
+                    .size(width = 68.dp, height = 68.dp)
+                    .aspectRatio(1f),
+                contentScale = ContentScale.Crop
 
 
-                )
+            )
             Column {
                 Text(
                     text = stringResource(topicCourse.courseText),
